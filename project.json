@@ -1,0 +1,20 @@
+{
+  "overview": "A professional public-facing website for MFG (Manza Familia Group), a UK real estate property consultancy. Features a branded hero section, property listings grid, detailed property pages, and a footer with contact details and social links.",
+  "features": [
+    "Branded hero section with company intro and call-to-action",
+    "Property listings grid with sample UK homes",
+    "Individual property detail pages",
+    "Contact details and social links in footer",
+    "Fully responsive mobile-friendly design"
+  ],
+  "category": "real-estate",
+  "tags": [
+    "real-estate",
+    "property",
+    "consultancy",
+    "uk",
+    "mfg",
+    "showcase"
+  ],
+  "last_updated": "2026-05-11T13:01:28.358Z"
+}
