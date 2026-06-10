@@ -1,2 +1,14 @@
+type QuoteRequest = 
+ record {
+   email: text;
+   message: text;
+   name: text;
+   phone: text;
+   role: text;
+ };
 service : {
+  submitQuote: (req: QuoteRequest) -> (record {
+                                         error: opt text;
+                                         ok: bool;
+                                       });
 }

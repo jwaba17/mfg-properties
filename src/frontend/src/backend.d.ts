@@ -7,5 +7,16 @@ export interface None {
     __kind__: "None";
 }
 export type Option<T> = Some<T> | None;
+export interface QuoteRequest {
+    name: string;
+    role: string;
+    email: string;
+    message: string;
+    phone: string;
+}
 export interface backendInterface {
+    submitQuote(req: QuoteRequest): Promise<{
+        ok: boolean;
+        error?: string;
+    }>;
 }

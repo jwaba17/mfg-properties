@@ -1,7 +1,9 @@
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { useSubmitQuote } from "@/hooks/useQueries";
 import { ArrowDown, CheckCircle2 } from "lucide-react";
 import { useState } from "react";
 
@@ -22,6 +24,11 @@ export function Home() {
     message: "",
   });
   const [submitted, setSubmitted] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [agreedToPrivacy, setAgreedToPrivacy] = useState(false);
+  const [marketingOptIn, setMarketingOptIn] = useState(false);
+  const [smsOptIn, setSmsOptIn] = useState(false);
+  const submitQuote = useSubmitQuote();
 
   function handleChange(
     e: React.ChangeEvent<
@@ -31,9 +38,25 @@ export function Home() {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   }
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setSubmitted(true);
+    setSubmitError(null);
+    if (!agreedToPrivacy) {
+      setSubmitError("Please accept the Privacy Policy to continue.");
+      return;
+    }
+    try {
+      const result = await submitQuote.mutateAsync(formData);
+      if (result.ok) {
+        setSubmitted(true);
+      } else {
+        setSubmitError(
+          result.error ?? "Something went wrong. Please try again.",
+        );
+      }
+    } catch {
+      setSubmitError("Failed to submit your quote. Please try again.");
+    }
   }
 
   return (
@@ -114,8 +137,23 @@ export function Home() {
         </div>
       </section>
 
+      {/* Property image accent — between Hero and Why MFG */}
+      <div
+        className="relative w-full h-64 sm:h-80 overflow-hidden"
+        aria-hidden="true"
+      >
+        <img
+          src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1800&q=85"
+          alt="Elegant modern UK property exterior"
+          className="w-full h-full object-cover"
+          loading="lazy"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-background/60 via-background/20 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-background/40 to-transparent" />
+      </div>
+
       {/* Why MFG */}
-      <section className="bg-background py-20">
+      <section id="why-choose-mfg" className="bg-background py-20">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div>
@@ -185,6 +223,20 @@ export function Home() {
         </div>
       </section>
 
+      {/* Property image accent — between Why MFG and CTA */}
+      <div
+        className="relative w-full h-56 sm:h-72 overflow-hidden"
+        aria-hidden="true"
+      >
+        <img
+          src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=1800&q=85"
+          alt="Bright contemporary property interior living room"
+          className="w-full h-full object-cover"
+          loading="lazy"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-transparent to-primary/50" />
+      </div>
+
       {/* CTA strip */}
       <section className="bg-primary py-16">
         <div className="max-w-7xl mx-auto px-6 lg:px-8 text-center">
@@ -212,6 +264,21 @@ export function Home() {
         </div>
       </section>
 
+      {/* Property image accent — between CTA and Pricing */}
+      <div
+        className="relative w-full h-56 sm:h-72 overflow-hidden"
+        aria-hidden="true"
+      >
+        <img
+          src="https://images.unsplash.com/photo-1582407947304-fd86f028f716?w=1800&q=85"
+          alt="Luxury UK residential street at dusk"
+          className="w-full h-full object-cover"
+          loading="lazy"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-primary/40 via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-background/60 to-transparent" />
+      </div>
+
       {/* Pricing / Get a Quote */}
       <section id="pricing" className="bg-muted/30 py-20">
         <div className="max-w-2xl mx-auto px-6 lg:px-8">
@@ -238,7 +305,7 @@ export function Home() {
                 Thank you!
               </h3>
               <p className="text-muted-foreground font-body">
-                We’ll be in touch with your tailored quote shortly.
+                We'll be in touch with your tailored quote shortly.
               </p>
             </div>
           ) : (
@@ -328,6 +395,8 @@ export function Home() {
                     </option>
                     <option value="estate-agent">Estate Agent</option>
                     <option value="investor">Investor</option>
+                    <option value="developer">Developer</option>
+                    <option value="other">Other</option>
                   </select>
                 </div>
               </div>
@@ -353,17 +422,129 @@ export function Home() {
                 />
               </div>
 
+              {/* Consent & Preferences */}
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <p className="text-sm font-medium text-foreground font-body">
+                    Consent &amp; Preferences
+                  </p>
+                </div>
+
+                {[
+                  {
+                    id: "privacy",
+                    label: (
+                      <>
+                        I acknowledge and agree to the{" "}
+                        <a
+                          href="/privacy"
+                          className="underline underline-offset-2 text-accent hover:text-accent/80 transition-colors duration-150"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          Privacy Policy
+                        </a>
+                        .
+                      </>
+                    ),
+                    helper:
+                      "Explains how your data is collected, stored, and used.",
+                    badge: "Required",
+                    badgeVariant: "required" as const,
+                    checked: agreedToPrivacy,
+                    onChange: (v: boolean) => setAgreedToPrivacy(v),
+                    ocid: "pricing.privacy_checkbox",
+                  },
+                  {
+                    id: "marketing",
+                    label:
+                      "I would like to receive updates, promotions, and community news via email.",
+                    helper: "You can unsubscribe at any time in Settings.",
+                    badge: "Optional",
+                    badgeVariant: "optional" as const,
+                    checked: marketingOptIn,
+                    onChange: (v: boolean) => setMarketingOptIn(v),
+                    ocid: "pricing.marketing_checkbox",
+                  },
+                  {
+                    id: "sms",
+                    label:
+                      "I agree to receive important updates and notifications via SMS.",
+                    helper:
+                      "Message frequency may vary. Standard rates may apply.",
+                    badge: "Optional",
+                    badgeVariant: "optional" as const,
+                    checked: smsOptIn,
+                    onChange: (v: boolean) => setSmsOptIn(v),
+                    ocid: "pricing.sms_checkbox",
+                  },
+                ].map((item) => (
+                  <div
+                    key={item.id}
+                    className="group flex gap-3 items-start rounded-lg border border-border bg-background p-3.5 hover:bg-muted/40 transition-colors duration-150 cursor-pointer"
+                    onClick={() => item.onChange(!item.checked)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        item.onChange(!item.checked);
+                      }
+                    }}
+                  >
+                    <Checkbox
+                      id={`consent-${item.id}`}
+                      checked={item.checked}
+                      onCheckedChange={(v) => item.onChange(v === true)}
+                      onClick={(e) => e.stopPropagation()}
+                      className="mt-0.5 shrink-0 transition-all duration-150"
+                      data-ocid={item.ocid}
+                    />
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <label
+                          htmlFor={`consent-${item.id}`}
+                          className="text-sm font-body text-foreground leading-snug cursor-pointer select-none"
+                        >
+                          {item.label}
+                        </label>
+                        <span
+                          className={`shrink-0 text-[10px] font-medium font-body px-1.5 py-0.5 rounded-full ${
+                            item.badgeVariant === "required"
+                              ? "bg-destructive/10 text-destructive"
+                              : "bg-muted text-muted-foreground"
+                          }`}
+                        >
+                          {item.badge}
+                        </span>
+                      </div>
+                      <p className="text-xs text-muted-foreground font-body mt-1 leading-relaxed">
+                        {item.helper}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {submitError && (
+                <p
+                  className="text-sm text-destructive font-body text-center"
+                  data-ocid="pricing.error_state"
+                >
+                  {submitError}
+                </p>
+              )}
+
               <Button
                 type="submit"
                 size="lg"
-                className="w-full bg-primary text-primary-foreground hover:bg-primary/90 font-body tracking-wide"
+                disabled={submitQuote.isPending}
+                className="w-full bg-primary text-primary-foreground hover:bg-primary/90 font-body tracking-wide disabled:opacity-60"
                 data-ocid="pricing.submit_button"
               >
-                Request a Quote
+                {submitQuote.isPending ? "Sending…" : "Request a Quote"}
               </Button>
 
               <p className="text-xs text-muted-foreground font-body text-center">
-                We’ll review your details and contact you directly with a
+                We'll review your details and contact you directly with a
                 personalised quote.
               </p>
             </form>

@@ -1,25 +1,26 @@
-import { Link, useNavigate } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
 
 const navLinks = [
   { label: "Home", to: "/" },
-  { label: "Properties", to: "/properties" },
+  { label: "Services", to: "/#why-choose-mfg" },
   { label: "Contact", to: "/#contact" },
 ];
 
 export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  const handleContactClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    if (e.currentTarget.getAttribute("href") === "/#contact") {
-      e.preventDefault();
-      const el = document.getElementById("contact");
-      if (el) {
-        el.scrollIntoView({ behavior: "smooth" });
-      } else {
-        window.location.href = "/#contact";
-      }
+  const handleScrollLink = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    id: string,
+  ) => {
+    e.preventDefault();
+    const el = document.getElementById(id);
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth" });
+    } else {
+      window.location.href = `/#${id}`;
     }
     setMobileOpen(false);
   };
@@ -57,11 +58,11 @@ export function Header() {
             aria-label="Main navigation"
           >
             {navLinks.map((link) =>
-              link.to === "/#contact" ? (
+              link.to.startsWith("/#") ? (
                 <a
                   key={link.label}
                   href={link.to}
-                  onClick={handleContactClick}
+                  onClick={(e) => handleScrollLink(e, link.to.slice(2))}
                   className="text-sm font-body tracking-wide text-primary-foreground/75 hover:text-accent transition-colors duration-200 cursor-pointer"
                   data-ocid={`nav.${link.label.toLowerCase()}_link`}
                 >
@@ -106,11 +107,11 @@ export function Header() {
         >
           <nav className="max-w-7xl mx-auto px-6 py-4 flex flex-col gap-4">
             {navLinks.map((link) =>
-              link.to === "/#contact" ? (
+              link.to.startsWith("/#") ? (
                 <a
                   key={link.label}
                   href={link.to}
-                  onClick={handleContactClick}
+                  onClick={(e) => handleScrollLink(e, link.to.slice(2))}
                   className="text-sm font-body tracking-wide text-primary-foreground/75 hover:text-accent transition-colors duration-200 py-1"
                   data-ocid={`nav.mobile_${link.label.toLowerCase()}_link`}
                 >

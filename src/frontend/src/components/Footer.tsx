@@ -1,4 +1,4 @@
-import { Linkedin, Mail, MapPin, Phone } from "lucide-react";
+import { Mail, MapPin, Phone } from "lucide-react";
 
 const year = new Date().getFullYear();
 const utmLink = `https://caffeine.ai?utm_source=caffeine-footer&utm_medium=referral&utm_content=${encodeURIComponent(typeof window !== "undefined" ? window.location.hostname : "mfg")}`;
@@ -30,19 +30,6 @@ export function Footer() {
               exceptional residential and commercial properties for discerning
               clients. Trusted expertise, curated results.
             </p>
-            {/* Social links */}
-            <div className="flex items-center gap-4">
-              <a
-                href="https://linkedin.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="MFG on LinkedIn"
-                className="w-9 h-9 rounded border border-primary-foreground/20 flex items-center justify-center text-primary-foreground/50 hover:text-accent hover:border-accent/50 transition-colors duration-200"
-                data-ocid="footer.linkedin_link"
-              >
-                <Linkedin size={15} />
-              </a>
-            </div>
           </div>
 
           {/* Contact column */}
@@ -74,7 +61,9 @@ export function Footer() {
               <li className="flex items-start gap-3 text-sm text-primary-foreground/65">
                 <MapPin size={14} className="mt-0.5 shrink-0 text-accent/70" />
                 <address className="not-italic">
-                  Virtual Address
+                  242 Boundary Road
+                  <br />
+                  E17 8ND
                   <br />
                   London, UK
                 </address>

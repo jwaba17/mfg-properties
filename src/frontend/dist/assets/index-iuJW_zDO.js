@@ -1,4 +1,4 @@
-import { c as createLucideIcon, r as reactExports, j as jsxRuntimeExports, R as React, d as clsx, a as cn } from "./index-B-ILfGiz.js";
+import { X as createLucideIcon, L as reactExports, Y as jsxRuntimeExports, Z as React, aa as clsx, _ as cn } from "./index-OwkT4rFD.js";
 /**
  * @license lucide-react v0.511.0 - ISC
  *
@@ -40,6 +40,9 @@ function composeRefs(...refs) {
       };
     }
   };
+}
+function useComposedRefs(...refs) {
+  return reactExports.useCallback(composeRefs(...refs), refs);
 }
 var REACT_LAZY_TYPE = Symbol.for("react.lazy");
 var use = React[" use ".trim().toString()];
@@ -256,5 +259,7 @@ var Primitive = NODES.reduce((primitive, node) => {
 export {
   Button as B,
   CircleCheck as C,
-  Primitive as P
+  Primitive as P,
+  composeRefs as c,
+  useComposedRefs as u
 };
